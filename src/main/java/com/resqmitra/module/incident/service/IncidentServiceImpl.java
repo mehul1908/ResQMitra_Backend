@@ -1,0 +1,148 @@
+package com.resqmitra.module.incident.service;
+
+import java.util.List;
+import java.util.Optional;
+import java.util.stream.Collectors;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
+import org.springframework.stereotype.Service;
+
+import com.resqmitra.module.auth.exception.UnauthorizedUserException;
+import com.resqmitra.module.incident.dto.DateModel;
+import com.resqmitra.module.incident.dto.IncidentRegModel;
+import com.resqmitra.module.incident.dto.IncidentVolunteerRegModel;
+import com.resqmitra.module.incident.entity.Incident;
+import com.resqmitra.module.incident.entity.IncidentVolunteer;
+import com.resqmitra.module.incident.exception.IncidentNotFoundException;
+import com.resqmitra.module.incident.repo.IncidentRepo;
+import com.resqmitra.module.incident.repo.IncidentVolunteerRepo;
+import com.resqmitra.module.user.entity.User;
+import com.resqmitra.module.user.service.UserService;
+import com.resqmitra.utilities.Role;
+
+import jakarta.validation.Valid;
+import lombok.extern.slf4j.Slf4j;
+
+@Service
+@Slf4j
+public class IncidentServiceImpl implements IncidentService{
+	
+	@Autowired
+	private UserService userService;
+	
+	@Autowired
+	private IncidentRepo incRepo;
+	
+	@Autowired
+	private IncidentVolunteerRepo incVolunteerRepo;
+
+	@Override
+	public Incident registerIncident(@Valid IncidentRegModel model) {
+		
+		User raisedBy = userService.getUserById(model.getRaisedBy());
+		
+		if(raisedBy == null) {
+			log.warn("Incident Creation : Raised by user id does not exist : {}" , model.getRaisedBy());
+			throw new UsernameNotFoundException("Raised By User Id is not existed");
+		}
+		
+		Incident inc = Incident.builder()
+				.raisedBy(raisedBy)
+				.type(model.getType())
+				.description(model.getDescription())
+				.latitude(model.getLatitude())
+				.longitude(model.getLongitude())
+				.build();
+		
+		incRepo.save(inc);
+		
+		
+		List<User> users = userService.getNearByVolunteer(inc);
+		
+		// Notify them
+		return inc;
+	}
+	
+	@Override
+	public Incident getIncidentById(Long incidentId) throws IncidentNotFoundException {
+		Optional<Incident> incOp = incRepo.findById(incidentId);
+		
+		if(incOp.isEmpty())
+			return null;
+		return incOp.get();
+	}
+
+	@Override
+	public IncidentVolunteer registerIncVolunteer(@Valid IncidentVolunteerRegModel model) throws IncidentNotFoundException {
+		
+		Incident inc = this.getIncidentById(model.getIncidentId());
+		
+		if(inc==null) {
+			log.warn("Incident with given id not found: {}" , model.getIncidentId());
+			throw new IncidentNotFoundException("Incident with id " + model.getIncidentId() + " not found");
+		}
+		
+		User user = userService.getUserByIdAndRole(model.getVolunteerId() , Role.ROLE_VOLUNTEER);
+		
+		if(user==null){
+			log.warn("User with given id not found: {}" , model.getVolunteerId());
+			throw new UsernameNotFoundException("User with id " + model.getVolunteerId() + " not found");
+		}
+		
+		IncidentVolunteer incVolunteer = IncidentVolunteer.builder()
+				.incident(inc)
+				.volunteer(user)
+				.build();
+		
+		incVolunteerRepo.save(incVolunteer);
+		return incVolunteer;
+		
+	}
+
+	@Override
+	public List<Incident> getAllIncident() {
+		List<Incident> incidents = incRepo.findAll();
+		return incidents;
+	}
+
+	@Override
+	public List<Incident> getIncidentByVolunteer() {
+		
+		Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+		if (auth != null && auth.getPrincipal() instanceof User user) {
+				
+			List<IncidentVolunteer> volunteers =  incVolunteerRepo.findByVolunteer(user);
+			return volunteers.stream()
+                    .map(IncidentVolunteer::getIncident)
+                    .collect(Collectors.toList());
+
+		} else {
+			throw new UnauthorizedUserException("User is unauthentical or not valid");
+		}		
+	}
+
+	@Override
+	public List<Incident> getIncidentByUser() {
+		Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+		if (auth != null && auth.getPrincipal() instanceof User user) {
+				
+			List<Incident> incidents =  incRepo.findByRaisedBy(user);
+			return incidents;
+
+		} else {
+			throw new UnauthorizedUserException("User is unauthentical or not valid");
+		}
+	}
+
+	@Override
+	public List<Incident> getIncidentByDate(DateModel model) {
+		List<Incident> incidents =  incRepo.findByCreatedAtBetween(model.getStartDate() , model.getEndDate());
+		return incidents;
+	}
+
+	
+
+}

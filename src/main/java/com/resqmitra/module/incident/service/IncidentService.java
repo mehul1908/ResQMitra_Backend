@@ -1,0 +1,29 @@
+package com.resqmitra.module.incident.service;
+
+import java.util.List;
+
+import com.resqmitra.module.incident.dto.DateModel;
+import com.resqmitra.module.incident.dto.IncidentRegModel;
+import com.resqmitra.module.incident.dto.IncidentVolunteerRegModel;
+import com.resqmitra.module.incident.entity.Incident;
+import com.resqmitra.module.incident.entity.IncidentVolunteer;
+import com.resqmitra.module.incident.exception.IncidentNotFoundException;
+
+import jakarta.validation.Valid;
+
+public interface IncidentService {
+
+	Incident registerIncident(@Valid IncidentRegModel model);
+
+	IncidentVolunteer registerIncVolunteer(@Valid IncidentVolunteerRegModel model) throws IncidentNotFoundException;
+
+	Incident getIncidentById(Long incidentId) throws IncidentNotFoundException ;
+	
+	List<Incident> getAllIncident();
+
+	List<Incident> getIncidentByVolunteer();
+
+	List<Incident> getIncidentByUser();
+
+	List<Incident> getIncidentByDate(DateModel model);
+}

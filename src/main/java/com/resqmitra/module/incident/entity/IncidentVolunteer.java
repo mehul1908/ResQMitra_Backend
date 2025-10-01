@@ -1,0 +1,51 @@
+package com.resqmitra.module.incident.entity;
+
+import java.time.LocalDateTime;
+
+import com.resqmitra.module.user.entity.User;
+
+import jakarta.persistence.Entity;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToOne;
+import jakarta.persistence.Table;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Data;
+import lombok.NoArgsConstructor;
+
+@Entity
+@Table(name = "incident_volunteers")
+@Data
+@NoArgsConstructor
+@AllArgsConstructor
+@Builder
+public class IncidentVolunteer {
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
+
+    @ManyToOne
+    @JoinColumn(name = "incident_id")
+    private Incident incident;
+
+    @ManyToOne
+    @JoinColumn(name = "volunteer_id")
+    private User volunteer;
+
+    @Enumerated(EnumType.STRING)
+    @Builder.Default
+    private Status status = Status.ACCEPTED;
+
+    @Builder.Default
+    private LocalDateTime joinedAt = LocalDateTime.now();
+
+    public enum Status {
+        ACCEPTED, ENROUTE, ON_SCENE, COMPLETED
+    }
+}
+
