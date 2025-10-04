@@ -4,7 +4,10 @@ import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import com.resqmitra.module.user.entity.User;
+import com.resqmitra.module.user.entity.UserIdSerializer;
 
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Entity;
@@ -35,17 +38,14 @@ public class Incident {
 
     @ManyToOne
     @JoinColumn(name = "citizen_id")
+    @JsonSerialize(using = VolunteerIdSerializer.class)
     private User raisedBy;
     
     @Builder.Default
+    @JsonIgnore
     @OneToMany(mappedBy = "incident", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<IncidentVolunteer> volunteers = new ArrayList();
 
-
-    @Enumerated(EnumType.STRING)
-    private Type type;
-
-    private String description;
     private Double latitude;
     private Double longitude;
 
@@ -56,10 +56,6 @@ public class Incident {
     @Builder.Default
     private LocalDateTime createdAt = LocalDateTime.now();
     private LocalDateTime resolvedAt;
-
-    public enum Type {
-        MEDICAL, FIRE, ACCIDENT, NATURAL_DISASTER, OTHER
-    }
 
     public enum Status {
         ACTIVE, IN_PROGRESS, RESOLVED, ESCALATED

@@ -36,14 +36,14 @@ public class AuthController {
 		User user = authService.checkUser(model);
 		
 		if(user!=null) {
-			String token = jwtUtils.generateToken(model.getEmailId());
+			String token = jwtUtils.generateToken(model.getEmail());
 			LoginResponse lr = new LoginResponse(user.getName(), user.getEmail(), user.getRole().toString() , token);
 			log.info("User Logged In :{} " ,  user.getEmail());
 			return ResponseEntity.ok(new ApiResponse(true, lr, "User login successfully"));
 		}
 		else {
-			log.warn("User not found for email: {}", model.getEmailId());
-			throw new UsernameNotFoundException("User not found for email: " + model.getEmailId());
+			log.warn("User not found for email: {}", model.getEmail());
+			throw new UsernameNotFoundException("User not found for email: " + model.getEmail());
 		}
 	}
 	

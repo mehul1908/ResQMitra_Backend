@@ -26,17 +26,17 @@ public class AuthServiceImpl implements AuthService {
 	@Override
 	public User checkUser(@Valid LoginModel model) throws UserIdAndPasswordNotMatchException {
 		
-		User user = userService.getUserById(model.getEmailId());
+		User user = userService.getUserById(model.getEmail());
 		
 		if(user == null) {
-			log.warn("User not found for email: {}", model.getEmailId());
-			throw new UsernameNotFoundException("User not found for email: " + model.getEmailId());
+			log.warn("User not found for email: {}", model.getEmail());
+			throw new UsernameNotFoundException("User not found for email: " + model.getEmail());
 		}
 		
 		if(passEncoder.matches(model.getPassword(), user.getPassword()))
 			return user;
 		
-		log.warn("User Id and Password does not match {} " + model.getEmailId());
+		log.warn("User Id and Password does not match {} " + model.getEmail());
 		throw new UserIdAndPasswordNotMatchException("User id and Password does not match");
 		
 		

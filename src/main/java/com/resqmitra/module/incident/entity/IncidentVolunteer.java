@@ -2,7 +2,9 @@ package com.resqmitra.module.incident.entity;
 
 import java.time.LocalDateTime;
 
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import com.resqmitra.module.user.entity.User;
+import com.resqmitra.module.user.entity.UserIdSerializer;
 
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
@@ -31,10 +33,12 @@ public class IncidentVolunteer {
 
     @ManyToOne
     @JoinColumn(name = "incident_id")
+    @JsonSerialize(using = UserIdSerializer.class)
     private Incident incident;
 
     @ManyToOne
     @JoinColumn(name = "volunteer_id")
+    @JsonSerialize(using = UserIdSerializer.class)
     private User volunteer;
 
     @Enumerated(EnumType.STRING)

@@ -1,10 +1,12 @@
 package com.resqmitra.module.incident.service;
 
+import java.time.LocalTime;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
@@ -19,10 +21,12 @@ import com.resqmitra.module.incident.entity.IncidentVolunteer;
 import com.resqmitra.module.incident.exception.IncidentNotFoundException;
 import com.resqmitra.module.incident.repo.IncidentRepo;
 import com.resqmitra.module.incident.repo.IncidentVolunteerRepo;
+import com.resqmitra.module.notify.service.EmailService;
 import com.resqmitra.module.user.entity.User;
 import com.resqmitra.module.user.service.UserService;
 import com.resqmitra.utilities.Role;
 
+import jakarta.mail.MessagingException;
 import jakarta.validation.Valid;
 import lombok.extern.slf4j.Slf4j;
 
@@ -39,8 +43,12 @@ public class IncidentServiceImpl implements IncidentService{
 	@Autowired
 	private IncidentVolunteerRepo incVolunteerRepo;
 
+	@Autowired
+	private EmailService emailService;
+	
 	@Override
-	public Incident registerIncident(@Valid IncidentRegModel model) {
+	@PreAuthorize("hasRole('CITIZEN')")
+	public Incident registerIncident(@Valid IncidentRegModel model) throws MessagingException {
 		
 		User raisedBy = userService.getUserById(model.getRaisedBy());
 		
@@ -51,8 +59,6 @@ public class IncidentServiceImpl implements IncidentService{
 		
 		Incident inc = Incident.builder()
 				.raisedBy(raisedBy)
-				.type(model.getType())
-				.description(model.getDescription())
 				.latitude(model.getLatitude())
 				.longitude(model.getLongitude())
 				.build();
@@ -61,7 +67,7 @@ public class IncidentServiceImpl implements IncidentService{
 		
 		
 		List<User> users = userService.getNearByVolunteer(inc);
-		
+		emailService.sendIncidentEmailToVolunteers(users, inc);
 		// Notify them
 		return inc;
 	}
@@ -139,7 +145,7 @@ public class IncidentServiceImpl implements IncidentService{
 
 	@Override
 	public List<Incident> getIncidentByDate(DateModel model) {
-		List<Incident> incidents =  incRepo.findByCreatedAtBetween(model.getStartDate() , model.getEndDate());
+		List<Incident> incidents =  incRepo.findByCreatedAtBetween(model.getStartDate().atStartOfDay() , model.getEndDate().atTime(LocalTime.MAX));
 		return incidents;
 	}
 

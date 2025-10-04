@@ -1,6 +1,6 @@
 package com.resqmitra.module.incident.exception;
 
-public class IncidentNotFoundException extends Exception {
+public class IncidentNotFoundException extends RuntimeException {
 
 	private static final long serialVersionUID = -6611044919122772259L;
 	

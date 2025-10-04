@@ -1,6 +1,5 @@
 package com.resqmitra.module.incident.dto;
 
-import com.resqmitra.module.incident.entity.Incident;
 
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
@@ -16,11 +15,6 @@ public class IncidentRegModel {
 	@NotNull(message = "Raised By User id can not be null")
 	@NotBlank(message = "Raised By User id can not be blank")
 	private String raisedBy;
-	
-	@NotNull(message = "Type cannot be null")
-	private Incident.Type type;
-	
-	private String description;
 	
 	@NotNull(message = "Latitude cannot be null")
 	private Double latitude;

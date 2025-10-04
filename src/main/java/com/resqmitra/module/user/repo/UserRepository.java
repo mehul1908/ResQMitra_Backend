@@ -17,7 +17,7 @@ public interface UserRepository extends JpaRepository<User, String> {
 	Optional<User> findByEmailAndRole(String volunteerId, Role role);
 
 	@Query(value = """
-			SELECT * FROM user
+			SELECT * FROM users
 			WHERE role = 'ROLE_VOLUNTEER'
 			AND (6371 * acos(
 			    cos(radians(:lat)) * cos(radians(latitude)) *

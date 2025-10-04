@@ -1,6 +1,6 @@
 package com.resqmitra.module.auth.exception;
 
-public class UserIdAndPasswordNotMatchException extends Exception {
+public class UserIdAndPasswordNotMatchException extends RuntimeException {
 
 	/**
 	 * 

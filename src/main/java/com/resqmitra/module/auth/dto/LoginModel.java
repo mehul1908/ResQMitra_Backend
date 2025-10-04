@@ -16,7 +16,7 @@ public class LoginModel {
 	@NotNull(message = "Email Id cannot be null")
 	@NotBlank(message = "Email Id cannot be blank")
 	@Email(message = "Email Id is not in proper format")
-	private String emailId;
+	private String email;
 	
 	@NotNull(message = "Password cannot be null")
 	@NotBlank(message = "Password cannot be blank")

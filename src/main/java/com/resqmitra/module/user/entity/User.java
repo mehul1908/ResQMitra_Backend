@@ -10,6 +10,7 @@ import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+
 import com.resqmitra.utilities.Role;
 import com.resqmitra.utilities.UserStatus;
 
@@ -18,7 +19,9 @@ import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
 import jakarta.persistence.Id;
+import jakarta.persistence.Table;
 import jakarta.validation.constraints.Pattern;
+
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -29,6 +32,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
+@Table(name = "users")
 public class User implements UserDetails {
 	
 	/**
@@ -39,6 +43,7 @@ public class User implements UserDetails {
 	@Id
 	private String email;
 	
+	@JsonIgnore
 	@Column(name="password" , nullable = false)
 	private String password;
 	
@@ -66,9 +71,11 @@ public class User implements UserDetails {
 	
 	@UpdateTimestamp
 	@Builder.Default
+	@JsonIgnore
 	private LocalDateTime updatedAt = LocalDateTime.now();
 
 	@Override
+	@JsonIgnore
 	public Collection<? extends GrantedAuthority> getAuthorities() {
 	    return List.of(new SimpleGrantedAuthority(this.role.name()));
 	}

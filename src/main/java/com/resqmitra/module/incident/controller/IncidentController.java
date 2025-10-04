@@ -20,6 +20,7 @@ import com.resqmitra.module.incident.entity.IncidentVolunteer;
 import com.resqmitra.module.incident.exception.IncidentNotFoundException;
 import com.resqmitra.module.incident.service.IncidentService;
 
+import jakarta.mail.MessagingException;
 import jakarta.validation.Valid;
 import lombok.extern.slf4j.Slf4j;
 
@@ -32,12 +33,12 @@ public class IncidentController {
 	private IncidentService incService;
 	
 	@PostMapping("/register")
-	public ResponseEntity<ApiResponse> registerIncident(@RequestBody @Valid IncidentRegModel model){
+	public ResponseEntity<ApiResponse> registerIncident(@RequestBody @Valid IncidentRegModel model) throws MessagingException{
 		
 		Incident inc = incService.registerIncident(model);
 		
 		if(inc==null) {
-			log.warn("User is not created");
+			log.warn("Incident is not created");
 			return ResponseEntity.status(HttpStatus.BAD_REQUEST)
 			        .body(new ApiResponse(false, null, "Incident Not Created"));
 		
@@ -66,10 +67,7 @@ public class IncidentController {
 	@GetMapping("/get")
 	public ResponseEntity<ApiResponse> getAllIncident(){
 		List<Incident> incidents = incService.getAllIncident();
-		
-		
-	   
-	        return ResponseEntity.ok(new ApiResponse(true , incidents , "List of Incidents")); // 200 OK
+	    return ResponseEntity.ok(new ApiResponse(true , incidents , "List of Incidents")); // 200 OK
 	    
 	}
 	

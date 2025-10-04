@@ -9,11 +9,12 @@ import com.resqmitra.module.incident.entity.Incident;
 import com.resqmitra.module.incident.entity.IncidentVolunteer;
 import com.resqmitra.module.incident.exception.IncidentNotFoundException;
 
+import jakarta.mail.MessagingException;
 import jakarta.validation.Valid;
 
 public interface IncidentService {
 
-	Incident registerIncident(@Valid IncidentRegModel model);
+	Incident registerIncident(@Valid IncidentRegModel model) throws MessagingException;
 
 	IncidentVolunteer registerIncVolunteer(@Valid IncidentVolunteerRegModel model) throws IncidentNotFoundException;
 
