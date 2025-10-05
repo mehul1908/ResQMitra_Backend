@@ -4,17 +4,22 @@ import java.util.List;
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
+import com.resqmitra.module.auth.exception.UnauthorizedUserException;
 import com.resqmitra.module.incident.entity.Incident;
 import com.resqmitra.module.user.dto.RegisterUserModel;
+import com.resqmitra.module.user.dto.UserUpdateModel;
 import com.resqmitra.module.user.entity.User;
 import com.resqmitra.module.user.exception.UserAlreadyCreatedException;
 import com.resqmitra.module.user.repo.UserRepository;
 import com.resqmitra.utilities.Role;
+import com.resqmitra.utilities.UserStatus;
 
 import jakarta.validation.Valid;
 import lombok.extern.slf4j.Slf4j;
@@ -83,6 +88,50 @@ public class UserServiceImpl implements UserDetailsService , UserService {
 			users = userRepo.findNearbyVolunteers(incident.getLatitude(), incident.getLongitude(), 5);
 		
 		return users;
+	}
+
+	@Override
+	public void deleteUser() {
+		Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+		if (auth != null && auth.getPrincipal() instanceof User user) {
+			
+			user.setStatus(UserStatus.INACTIVE);
+			userRepo.save(user);
+			return;
+			
+		} else {
+			throw new UnauthorizedUserException("User is unauthentical or not valid");
+		}
+	}
+
+	@Override
+	public User updateUser(@Valid UserUpdateModel model) {
+		
+		Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+		if (auth != null && auth.getPrincipal() instanceof User user) {
+			
+			if(model.getName()!=null)
+				user.setName(model.getName());
+			if(model.getPhone()!=null)
+				user.setPhone(model.getPhone());
+			
+			userRepo.save(user);
+			
+			return user;
+			
+			
+		} else {
+			throw new UnauthorizedUserException("User is unauthentical or not valid");
+		}
+		
+	}
+
+	@Override
+	public User getUserByIdAndStatus(String email, UserStatus status) {
+		Optional<User> userOp = userRepo.findByEmailAndStatus(email , status);
+		if(userOp.isEmpty()) 
+			return null;
+		return userOp.get();
 	}
 
 }

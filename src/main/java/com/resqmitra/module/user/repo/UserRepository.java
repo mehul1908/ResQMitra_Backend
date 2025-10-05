@@ -10,6 +10,7 @@ import org.springframework.stereotype.Repository;
 
 import com.resqmitra.module.user.entity.User;
 import com.resqmitra.utilities.Role;
+import com.resqmitra.utilities.UserStatus;
 
 @Repository
 public interface UserRepository extends JpaRepository<User, String> {
@@ -27,5 +28,7 @@ public interface UserRepository extends JpaRepository<User, String> {
 			""", nativeQuery = true)
 	List<User> findNearbyVolunteers(@Param("lat") double lat, @Param("lng") double lng,
 			@Param("radius") double radiusKm);
+
+	Optional<User> findByEmailAndStatus(String email, UserStatus status);
 
 }

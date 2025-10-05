@@ -41,15 +41,8 @@ public class IncidentVolunteer {
     @JsonSerialize(using = UserIdSerializer.class)
     private User volunteer;
 
-    @Enumerated(EnumType.STRING)
-    @Builder.Default
-    private Status status = Status.ACCEPTED;
-
     @Builder.Default
     private LocalDateTime joinedAt = LocalDateTime.now();
 
-    public enum Status {
-        ACCEPTED, ENROUTE, ON_SCENE, COMPLETED
-    }
 }
 

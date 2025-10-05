@@ -1,5 +1,6 @@
 package com.resqmitra.module.incident.service;
 
+import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.util.List;
 import java.util.Optional;
@@ -88,7 +89,7 @@ public class IncidentServiceImpl implements IncidentService{
 		
 		if(inc==null) {
 			log.warn("Incident with given id not found: {}" , model.getIncidentId());
-			throw new IncidentNotFoundException("Incident with id " + model.getIncidentId() + " not found");
+			throw new IncidentNotFoundException(model.getIncidentId());
 		}
 		
 		User user = userService.getUserByIdAndRole(model.getVolunteerId() , Role.ROLE_VOLUNTEER);
@@ -104,6 +105,7 @@ public class IncidentServiceImpl implements IncidentService{
 				.build();
 		
 		incVolunteerRepo.save(incVolunteer);
+		inc.setStatus(Incident.Status.IN_PROGRESS);
 		return incVolunteer;
 		
 	}
@@ -147,6 +149,35 @@ public class IncidentServiceImpl implements IncidentService{
 	public List<Incident> getIncidentByDate(DateModel model) {
 		List<Incident> incidents =  incRepo.findByCreatedAtBetween(model.getStartDate().atStartOfDay() , model.getEndDate().atTime(LocalTime.MAX));
 		return incidents;
+	}
+
+	@Override
+	public void resolveIncident(Incident inc) {
+		
+		if(inc == null) {
+			throw new IncidentNotFoundException();
+		}
+		
+		Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+		if (auth != null && auth.getPrincipal() instanceof User user) {
+			
+			if(isVolunteerRelated(user , inc)) {
+				inc.setStatus(Incident.Status.RESOLVED);
+				inc.setResolvedAt(LocalDateTime.now());
+				incRepo.save(inc);
+				return;
+			}
+
+		}
+		throw new UnauthorizedUserException("User is unauthentical or not valid");
+		
+	}
+
+	private boolean isVolunteerRelated(User user, Incident inc) {
+		if(!user.getRole().equals(Role.ROLE_VOLUNTEER))
+			return false;
+		Optional<IncidentVolunteer> vol = incVolunteerRepo.findByVolunteerAndIncident(user , inc);
+		return vol.isPresent();
 	}
 
 	

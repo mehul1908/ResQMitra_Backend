@@ -37,7 +37,7 @@ public class AuthController {
 		
 		if(user!=null) {
 			String token = jwtUtils.generateToken(model.getEmail());
-			LoginResponse lr = new LoginResponse(user.getName(), user.getEmail(), user.getRole().toString() , token);
+			LoginResponse lr = new LoginResponse(user.getName(), user.getEmail(), user.getRole().toString() , token , jwtUtils.extractExpiration(token));
 			log.info("User Logged In :{} " ,  user.getEmail());
 			return ResponseEntity.ok(new ApiResponse(true, lr, "User login successfully"));
 		}

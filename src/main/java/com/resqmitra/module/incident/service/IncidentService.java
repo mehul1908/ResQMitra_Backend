@@ -27,4 +27,6 @@ public interface IncidentService {
 	List<Incident> getIncidentByUser();
 
 	List<Incident> getIncidentByDate(DateModel model);
+
+	void resolveIncident(Incident inc);
 }

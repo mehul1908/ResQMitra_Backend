@@ -9,6 +9,7 @@ import com.resqmitra.module.auth.dto.LoginModel;
 import com.resqmitra.module.auth.exception.UserIdAndPasswordNotMatchException;
 import com.resqmitra.module.user.entity.User;
 import com.resqmitra.module.user.service.UserService;
+import com.resqmitra.utilities.UserStatus;
 
 import jakarta.validation.Valid;
 import lombok.extern.slf4j.Slf4j;
@@ -26,7 +27,7 @@ public class AuthServiceImpl implements AuthService {
 	@Override
 	public User checkUser(@Valid LoginModel model) throws UserIdAndPasswordNotMatchException {
 		
-		User user = userService.getUserById(model.getEmail());
+		User user = userService.getUserByIdAndStatus(model.getEmail() , UserStatus.ACTIVE);
 		
 		if(user == null) {
 			log.warn("User not found for email: {}", model.getEmail());

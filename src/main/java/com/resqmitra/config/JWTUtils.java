@@ -33,10 +33,9 @@ public class JWTUtils {
 
 	private String createToken(Map<String, Object> claims, String subject) {
 		Date createDate = new Date(System.currentTimeMillis());
-		Date expireDate = new Date(System.currentTimeMillis() + 1000 * 60 * 100);
+		Date expireDate = new Date(System.currentTimeMillis() + 1000L * 60 * 60 * 24);
 
-		return Jwts.builder().setClaims(claims).setSubject(subject).setIssuedAt(createDate).setExpiration(expireDate) // 100
-																														// minute
+		return Jwts.builder().setClaims(claims).setSubject(subject).setIssuedAt(createDate).setExpiration(expireDate) // 1 day
 																														// validity
 				.signWith(getSigningKey()).compact();
 	}
@@ -55,7 +54,7 @@ public class JWTUtils {
 		}
 	}
 
-	private Date extractExpiration(String token) {
+	public Date extractExpiration(String token) {
 		final Claims claims = extractAllClaims(token);
 		return claims.getExpiration();
 	}
