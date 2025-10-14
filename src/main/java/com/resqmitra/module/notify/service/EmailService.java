@@ -73,6 +73,15 @@ public class EmailService {
     }
 
     private String generateLocation(Incident inc) {
-        return "https://example.com/decline?incidentId=" + inc.getIncidentId();
+    	int zoomLevel = 15; // Set a default zoom level (e.g., 15 for street level)
+
+        String googleMapsUrl = String.format(
+            "https://www.google.com/maps/search/?api=1&query=%s,%s&zoom=%d", 
+            inc.getLatitude(), 
+            inc.getLongitude(), 
+            zoomLevel
+        );
+
+        return googleMapsUrl;
     }
 }

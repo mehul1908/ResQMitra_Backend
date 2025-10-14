@@ -5,6 +5,7 @@ import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -24,6 +25,7 @@ import com.resqmitra.module.incident.service.IncidentService;
 
 import jakarta.mail.MessagingException;
 import jakarta.validation.Valid;
+
 import lombok.extern.slf4j.Slf4j;
 
 @RestController
@@ -35,6 +37,7 @@ public class IncidentController {
 	private IncidentService incService;
 	
 	@PostMapping("/register")
+	@PreAuthorize("authenticated()")
 	public ResponseEntity<ApiResponse> registerIncident(@RequestBody @Valid IncidentRegModel model) throws MessagingException{
 		
 		Incident inc = incService.registerIncident(model);
@@ -76,12 +79,6 @@ public class IncidentController {
 	@GetMapping("/get/byvolunteer")
 	public ResponseEntity<ApiResponse> getIncidentByVolunteer(){
 		List<Incident> incidents = incService.getIncidentByVolunteer();
-		return ResponseEntity.ok(new ApiResponse(true, incidents, "List of Incidents"));
-	}
-	
-	@GetMapping("/get/byuser")
-	public ResponseEntity<ApiResponse> getIncidentByUser(){
-		List<Incident> incidents = incService.getIncidentByUser();
 		return ResponseEntity.ok(new ApiResponse(true, incidents, "List of Incidents"));
 	}
 	

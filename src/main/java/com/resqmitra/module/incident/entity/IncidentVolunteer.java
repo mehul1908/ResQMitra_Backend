@@ -7,8 +7,6 @@ import com.resqmitra.module.user.entity.User;
 import com.resqmitra.module.user.entity.UserIdSerializer;
 
 import jakarta.persistence.Entity;
-import jakarta.persistence.EnumType;
-import jakarta.persistence.Enumerated;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;

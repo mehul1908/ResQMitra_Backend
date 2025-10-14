@@ -14,6 +14,7 @@ import org.springframework.stereotype.Service;
 import com.resqmitra.module.auth.exception.UnauthorizedUserException;
 import com.resqmitra.module.incident.entity.Incident;
 import com.resqmitra.module.user.dto.RegisterUserModel;
+import com.resqmitra.module.user.dto.UserLocationUpdateModel;
 import com.resqmitra.module.user.dto.UserUpdateModel;
 import com.resqmitra.module.user.entity.User;
 import com.resqmitra.module.user.exception.UserAlreadyCreatedException;
@@ -132,6 +133,29 @@ public class UserServiceImpl implements UserDetailsService , UserService {
 		if(userOp.isEmpty()) 
 			return null;
 		return userOp.get();
+	}
+
+	@Override
+	public void updateLocation(@Valid UserLocationUpdateModel model) {
+		
+		Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+		if (auth != null && auth.getPrincipal() instanceof User user) {
+			
+			try {
+			
+			user.setLatitude(model.getLatitude());
+			user.setLongitude(model.getLongitude());
+			
+			userRepo.save(user);
+			
+			}catch(RuntimeException ex) {
+				throw ex;
+			}
+			
+			
+		} else {
+			throw new UnauthorizedUserException("User is unauthentical or not valid");
+		}
 	}
 
 }

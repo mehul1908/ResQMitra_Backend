@@ -3,9 +3,7 @@ package com.resqmitra.utilities;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 public enum Role {
-	@JsonProperty("Citizen")
-    ROLE_CITIZEN("Citizen"),
-    
+	
     @JsonProperty("Volunteer")
     ROLE_VOLUNTEER("Volunteer"),
     

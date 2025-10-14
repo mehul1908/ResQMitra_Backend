@@ -13,6 +13,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.resqmitra.dto.ApiResponse;
 import com.resqmitra.module.user.dto.RegisterUserModel;
+import com.resqmitra.module.user.dto.UserLocationUpdateModel;
 import com.resqmitra.module.user.dto.UserUpdateModel;
 import com.resqmitra.module.user.entity.User;
 import com.resqmitra.module.user.exception.UserAlreadyCreatedException;
@@ -62,6 +63,11 @@ public class UserController {
 		userService.updateUser(model);
 		
 		return ResponseEntity.ok(new ApiResponse(true, null, "User is updated successfully"));
-		
+	}
+	
+	@PutMapping("/update/location")
+	public ResponseEntity<ApiResponse> updateLocation(@RequestBody @Valid UserLocationUpdateModel model){
+		userService.updateLocation(model);
+		return ResponseEntity.ok(new ApiResponse(true , null , "User Location updated"));
 	}
 }

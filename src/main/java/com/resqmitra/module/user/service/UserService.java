@@ -4,6 +4,7 @@ import java.util.List;
 
 import com.resqmitra.module.incident.entity.Incident;
 import com.resqmitra.module.user.dto.RegisterUserModel;
+import com.resqmitra.module.user.dto.UserLocationUpdateModel;
 import com.resqmitra.module.user.dto.UserUpdateModel;
 import com.resqmitra.module.user.entity.User;
 import com.resqmitra.module.user.exception.UserAlreadyCreatedException;
@@ -27,4 +28,6 @@ public interface UserService {
 	User updateUser(@Valid UserUpdateModel model);
 
 	User getUserByIdAndStatus(String email, UserStatus active);
+
+	void updateLocation(@Valid UserLocationUpdateModel model);
 }

@@ -18,16 +18,17 @@ public interface UserRepository extends JpaRepository<User, String> {
 	Optional<User> findByEmailAndRole(String volunteerId, Role role);
 
 	@Query(value = """
-			SELECT * FROM users
-			WHERE role = 'ROLE_VOLUNTEER'
-			AND (6371 * acos(
-			    cos(radians(:lat)) * cos(radians(latitude)) *
-			    cos(radians(longitude) - radians(:lng)) +
-			    sin(radians(:lat)) * sin(radians(latitude))
-			)) <= :radius
-			""", nativeQuery = true)
-	List<User> findNearbyVolunteers(@Param("lat") double lat, @Param("lng") double lng,
-			@Param("radius") double radiusKm);
+		    SELECT * FROM users
+		    WHERE role = 'ROLE_VOLUNTEER'
+		    AND status = 'ACTIVE' /* <--- USE THE ENUM NAME HERE */
+		    AND (6371 * acos(
+		        cos(radians(:lat)) * cos(radians(latitude)) *
+		        cos(radians(longitude) - radians(:lng)) +
+		        sin(radians(:lat)) * sin(radians(latitude))
+		    )) <= :radius
+		    """, nativeQuery = true)
+		List<User> findNearbyVolunteers(@Param("lat") double lat, @Param("lng") double lng,
+		        @Param("radius") double radiusKm);
 
 	Optional<User> findByEmailAndStatus(String email, UserStatus status);
 

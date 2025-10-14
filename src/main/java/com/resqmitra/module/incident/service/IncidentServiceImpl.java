@@ -51,15 +51,7 @@ public class IncidentServiceImpl implements IncidentService{
 	@PreAuthorize("hasRole('CITIZEN')")
 	public Incident registerIncident(@Valid IncidentRegModel model) throws MessagingException {
 		
-		User raisedBy = userService.getUserById(model.getRaisedBy());
-		
-		if(raisedBy == null) {
-			log.warn("Incident Creation : Raised by user id does not exist : {}" , model.getRaisedBy());
-			throw new UsernameNotFoundException("Raised By User Id is not existed");
-		}
-		
 		Incident inc = Incident.builder()
-				.raisedBy(raisedBy)
 				.latitude(model.getLatitude())
 				.longitude(model.getLongitude())
 				.build();
@@ -130,19 +122,6 @@ public class IncidentServiceImpl implements IncidentService{
 		} else {
 			throw new UnauthorizedUserException("User is unauthentical or not valid");
 		}		
-	}
-
-	@Override
-	public List<Incident> getIncidentByUser() {
-		Authentication auth = SecurityContextHolder.getContext().getAuthentication();
-		if (auth != null && auth.getPrincipal() instanceof User user) {
-				
-			List<Incident> incidents =  incRepo.findByRaisedBy(user);
-			return incidents;
-
-		} else {
-			throw new UnauthorizedUserException("User is unauthentical or not valid");
-		}
 	}
 
 	@Override
