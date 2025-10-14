@@ -37,7 +37,6 @@ public class IncidentController {
 	private IncidentService incService;
 	
 	@PostMapping("/register")
-	@PreAuthorize("authenticated()")
 	public ResponseEntity<ApiResponse> registerIncident(@RequestBody @Valid IncidentRegModel model) throws MessagingException{
 		
 		Incident inc = incService.registerIncident(model);
@@ -55,6 +54,7 @@ public class IncidentController {
 	}
 	
 	@PostMapping("/register/volunteer")
+	@PreAuthorize("hasRole('VOLUNTEER')")
 	public ResponseEntity<ApiResponse> registerIncidentVolunteer(@RequestBody @Valid IncidentVolunteerRegModel model) throws IncidentNotFoundException{
 		IncidentVolunteer volunteer = incService.registerIncVolunteer(model);
 		
@@ -70,6 +70,7 @@ public class IncidentController {
 	}
 	
 	@GetMapping("/get")
+	@PreAuthorize("authenticated()")
 	public ResponseEntity<ApiResponse> getAllIncident(){
 		List<Incident> incidents = incService.getAllIncident();
 	    return ResponseEntity.ok(new ApiResponse(true , incidents , "List of Incidents")); // 200 OK
@@ -77,17 +78,20 @@ public class IncidentController {
 	}
 	
 	@GetMapping("/get/byvolunteer")
+	@PreAuthorize("hasRole('VOLUNTEER')")
 	public ResponseEntity<ApiResponse> getIncidentByVolunteer(){
 		List<Incident> incidents = incService.getIncidentByVolunteer();
 		return ResponseEntity.ok(new ApiResponse(true, incidents, "List of Incidents"));
 	}
 	
+	@PreAuthorize("hasRole('ADMIN')")
 	@GetMapping("/get/bydate")
 	public ResponseEntity<ApiResponse> getIncidentByDate(@RequestBody DateModel model){
 		List<Incident> incidents = incService.getIncidentByDate(model);
 		return ResponseEntity.ok(new ApiResponse(true, incidents, "List of Incidents"));
 	}
 	
+	@PreAuthorize("hasRole('VOLUNTEER')")
 	@PutMapping("/resolve/{incidentId}")
 	public ResponseEntity<ApiResponse> resolveIncident(@PathVariable Long incidentId){
 		Incident inc = incService.getIncidentById(incidentId);

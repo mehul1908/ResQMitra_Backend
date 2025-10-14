@@ -23,11 +23,10 @@ public class SecurityConfig {
         http
             .csrf(csrf -> csrf.disable())
             .authorizeHttpRequests(auth -> auth
-                .requestMatchers("/auth/**" , "/user/register", "/swagger-ui/**", "/v3/api-docs/**", "/swagger-ui.html", "/webjars/**" , "/login/oauth2/code/google").permitAll()
-                .requestMatchers("/ws/**").permitAll()
-                .requestMatchers("/acc/**").hasRole("ACCOUNTANT")
-                .requestMatchers("/admin/**").hasRole("ADMIN")
-                .anyRequest().authenticated()
+                .requestMatchers("/auth/**" , "/user/register",  "/incident/register",  "/swagger-ui/**", "/v3/api-docs/**", "/swagger-ui.html", "/webjars/**").permitAll()
+                .requestMatchers("/incident/get" , "/user/delete").authenticated()
+                .requestMatchers("/incident/register/volunteer" , "/incident/get/byvolunteer" , "/incident/resolve/**").hasRole("VOLUNTEER")
+                .requestMatchers("/incident/get/bydate").hasRole("ADMIN")
             );
 
         // Add JWT Filter

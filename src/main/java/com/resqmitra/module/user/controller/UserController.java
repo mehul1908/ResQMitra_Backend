@@ -3,6 +3,7 @@ package com.resqmitra.module.user.controller;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -53,12 +54,14 @@ public class UserController {
 	}
 	
 	@DeleteMapping("/delete")
+	@PreAuthorize("authenticated()")
 	public ResponseEntity<ApiResponse> deleteUser(){
 		userService.deleteUser();
 		return ResponseEntity.ok(new ApiResponse(true , null , "User deactivated successfully"));
 	}
 	
 	@PutMapping("/update")
+	@PreAuthorize("authenticated()")
 	public ResponseEntity<ApiResponse> updateUser(@RequestBody @Valid UserUpdateModel model){
 		userService.updateUser(model);
 		
@@ -66,6 +69,7 @@ public class UserController {
 	}
 	
 	@PutMapping("/update/location")
+	@PreAuthorize("authenticated()")
 	public ResponseEntity<ApiResponse> updateLocation(@RequestBody @Valid UserLocationUpdateModel model){
 		userService.updateLocation(model);
 		return ResponseEntity.ok(new ApiResponse(true , null , "User Location updated"));
