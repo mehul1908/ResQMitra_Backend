@@ -31,7 +31,7 @@ public class IncidentVolunteer {
 
     @ManyToOne
     @JoinColumn(name = "incident_id")
-    @JsonSerialize(using = UserIdSerializer.class)
+    @JsonSerialize(using = IncidentIdSerializer.class)
     private Incident incident;
 
     @ManyToOne

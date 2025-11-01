@@ -17,6 +17,11 @@ public class SecurityConfig {
     @Autowired
     private JWTFilter jwtFilter;
     
+    @Autowired
+    private CustomAccessDeniedHandler accessDeniedHandler;
+
+    @Autowired
+    private CustomAuthenticationEntryPoint authenticationEntryPoint;
 
     @Bean
     SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
@@ -27,7 +32,12 @@ public class SecurityConfig {
                 .requestMatchers("/incident/get" , "/user/delete").authenticated()
                 .requestMatchers("/incident/register/volunteer" , "/incident/get/byvolunteer" , "/incident/resolve/**").hasRole("VOLUNTEER")
                 .requestMatchers("/incident/get/bydate").hasRole("ADMIN")
-            );
+                .anyRequest().authenticated()
+            )
+            .exceptionHandling(ex -> ex
+                    .accessDeniedHandler(accessDeniedHandler)
+                    .authenticationEntryPoint(authenticationEntryPoint)
+                );
 
         // Add JWT Filter
         http.addFilterBefore(jwtFilter, UsernamePasswordAuthenticationFilter.class);

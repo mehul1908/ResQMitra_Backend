@@ -70,7 +70,7 @@ public class IncidentServiceImpl implements IncidentService{
 		Optional<Incident> incOp = incRepo.findById(incidentId);
 		
 		if(incOp.isEmpty())
-			return null;
+			throw new IncidentNotFoundException(incidentId);
 		return incOp.get();
 	}
 

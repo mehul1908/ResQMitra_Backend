@@ -4,8 +4,11 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -73,5 +76,15 @@ public class UserController {
 	public ResponseEntity<ApiResponse> updateLocation(@RequestBody @Valid UserLocationUpdateModel model){
 		userService.updateLocation(model);
 		return ResponseEntity.ok(new ApiResponse(true , null , "User Location updated"));
+	}
+	
+	@GetMapping("/get/{emailId}")
+	public ResponseEntity<ApiResponse> getUserByEmail(@PathVariable String emailId){
+		User user = userService.getUserById(emailId);
+		if(user==null) {
+			throw new UsernameNotFoundException("User with given username not found. : " + emailId);
+		}
+		
+		return ResponseEntity.ok(new ApiResponse(true, user, "User is found"));
 	}
 }
