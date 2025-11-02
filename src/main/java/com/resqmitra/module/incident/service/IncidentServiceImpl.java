@@ -48,7 +48,6 @@ public class IncidentServiceImpl implements IncidentService{
 	private EmailService emailService;
 	
 	@Override
-	@PreAuthorize("hasRole('CITIZEN')")
 	public Incident registerIncident(@Valid IncidentRegModel model) throws MessagingException {
 		
 		Incident inc = Incident.builder()
@@ -104,7 +103,7 @@ public class IncidentServiceImpl implements IncidentService{
 
 	@Override
 	public List<Incident> getAllIncident() {
-		List<Incident> incidents = incRepo.findAll();
+		List<Incident> incidents = incRepo.findAllByOrderByCreatedAtDesc();
 		return incidents;
 	}
 
@@ -114,7 +113,7 @@ public class IncidentServiceImpl implements IncidentService{
 		Authentication auth = SecurityContextHolder.getContext().getAuthentication();
 		if (auth != null && auth.getPrincipal() instanceof User user) {
 				
-			List<IncidentVolunteer> volunteers =  incVolunteerRepo.findByVolunteer(user);
+			List<IncidentVolunteer> volunteers =  incVolunteerRepo.findByVolunteerOrderByIncidentCreatedAtDesc(user);
 			return volunteers.stream()
                     .map(IncidentVolunteer::getIncident)
                     .collect(Collectors.toList());

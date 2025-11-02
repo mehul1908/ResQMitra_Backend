@@ -11,33 +11,30 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
+import lombok.extern.slf4j.Slf4j;
+
 @Configuration
+@Slf4j
 public class SecurityConfig {
 
     @Autowired
     private JWTFilter jwtFilter;
     
-    @Autowired
-    private CustomAccessDeniedHandler accessDeniedHandler;
+    
 
-    @Autowired
-    private CustomAuthenticationEntryPoint authenticationEntryPoint;
+   
 
     @Bean
     SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
+    	log.warn("in security filter chain");
         http
             .csrf(csrf -> csrf.disable())
             .authorizeHttpRequests(auth -> auth
+//                .requestMatchers("/incident/register/volunteer" , "/incident/get/byvolunteer" , "/incident/resolve/**").hasRole("VOLUNTEER")
+//                .requestMatchers("/incident/get/bydate").hasRole("ADMIN")
                 .requestMatchers("/auth/**" , "/user/register",  "/incident/register",  "/swagger-ui/**", "/v3/api-docs/**", "/swagger-ui.html", "/webjars/**").permitAll()
-                .requestMatchers("/incident/get" , "/user/delete").authenticated()
-                .requestMatchers("/incident/register/volunteer" , "/incident/get/byvolunteer" , "/incident/resolve/**").hasRole("VOLUNTEER")
-                .requestMatchers("/incident/get/bydate").hasRole("ADMIN")
                 .anyRequest().authenticated()
-            )
-            .exceptionHandling(ex -> ex
-                    .accessDeniedHandler(accessDeniedHandler)
-                    .authenticationEntryPoint(authenticationEntryPoint)
-                );
+            );
 
         // Add JWT Filter
         http.addFilterBefore(jwtFilter, UsernamePasswordAuthenticationFilter.class);

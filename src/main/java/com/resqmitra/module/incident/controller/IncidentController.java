@@ -53,7 +53,7 @@ public class IncidentController {
 		
 	}
 	
-	@PostMapping("/register/volunteer")
+	@PostMapping("/volunteer/register")
 	@PreAuthorize("hasRole('VOLUNTEER')")
 	public ResponseEntity<ApiResponse> registerIncidentVolunteer(@RequestBody @Valid IncidentVolunteerRegModel model) throws IncidentNotFoundException{
 		IncidentVolunteer volunteer = incService.registerIncVolunteer(model);
@@ -85,7 +85,7 @@ public class IncidentController {
 	}
 	
 	@PreAuthorize("hasRole('ADMIN')")
-	@GetMapping("/get/bydate")
+	@PostMapping("/get/bydate")
 	public ResponseEntity<ApiResponse> getIncidentByDate(@RequestBody DateModel model){
 		List<Incident> incidents = incService.getIncidentByDate(model);
 		return ResponseEntity.ok(new ApiResponse(true, incidents, "List of Incidents"));

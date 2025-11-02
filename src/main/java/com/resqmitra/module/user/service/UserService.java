@@ -30,4 +30,6 @@ public interface UserService {
 	User getUserByIdAndStatus(String email, UserStatus active);
 
 	void updateLocation(@Valid UserLocationUpdateModel model);
+
+	List<User> getAllVolunteer();
 }

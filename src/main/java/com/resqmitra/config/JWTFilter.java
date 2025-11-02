@@ -51,7 +51,7 @@ public class JWTFilter extends OncePerRequestFilter{
 	        throws ServletException, IOException {
 
 	    final String authHeader = request.getHeader("Authorization");
-
+	    log.info("before checking header");
 	    if (authHeader == null || !authHeader.startsWith("Bearer ")) {
 	        response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
 	        response.getWriter().write("Token not found or malformed.");
@@ -82,7 +82,7 @@ public class JWTFilter extends OncePerRequestFilter{
 	            response.getWriter().write("Token validation failed. Possibly tampered.");
 	            return;
 	        }
-
+	        log.info("before the log in");
 	        String userId = jwtutils.extractUserID(jwt);
 	        User user = userService.getUserById(userId);
 	        if (user != null) {

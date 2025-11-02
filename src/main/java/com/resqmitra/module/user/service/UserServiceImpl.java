@@ -158,4 +158,10 @@ public class UserServiceImpl implements UserDetailsService , UserService {
 		}
 	}
 
+	@Override
+	public List<User> getAllVolunteer() {
+		List<User> users = userRepo.findByRole(Role.ROLE_VOLUNTEER);
+		return users;
+	}
+
 }

@@ -10,5 +10,8 @@ import com.resqmitra.module.incident.entity.Incident;
 public interface IncidentRepo extends JpaRepository<Incident, Long> {
 
 	List<Incident> findByCreatedAtBetween(LocalDateTime startDate, LocalDateTime endDate);
+
+
+	List<Incident> findAllByOrderByCreatedAtDesc();
 	
 }

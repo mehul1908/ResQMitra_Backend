@@ -1,5 +1,7 @@
 package com.resqmitra.module.user.controller;
 
+import java.util.List;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -86,5 +88,13 @@ public class UserController {
 		}
 		
 		return ResponseEntity.ok(new ApiResponse(true, user, "User is found"));
+	}
+	
+	
+	@GetMapping("/get/volunteer")
+	public ResponseEntity<ApiResponse> getAllVolunteer(){
+		List<User> users = userService.getAllVolunteer();
+	    return ResponseEntity.ok(new ApiResponse(true , users , "List of Volunteers")); // 200 OK
+
 	}
 }
