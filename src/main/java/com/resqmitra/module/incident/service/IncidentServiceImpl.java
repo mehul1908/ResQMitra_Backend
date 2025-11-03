@@ -2,12 +2,12 @@ package com.resqmitra.module.incident.service;
 
 import java.time.LocalDateTime;
 import java.time.LocalTime;
+import java.time.ZoneId;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
@@ -141,7 +141,9 @@ public class IncidentServiceImpl implements IncidentService{
 			
 			if(isVolunteerRelated(user , inc)) {
 				inc.setStatus(Incident.Status.RESOLVED);
-				inc.setResolvedAt(LocalDateTime.now());
+				inc.setResolvedAt(LocalDateTime.now()
+		                .atZone(ZoneId.systemDefault())
+		                .toLocalDateTime());
 				incRepo.save(inc);
 				return;
 			}
@@ -157,7 +159,5 @@ public class IncidentServiceImpl implements IncidentService{
 		Optional<IncidentVolunteer> vol = incVolunteerRepo.findByVolunteerAndIncident(user , inc);
 		return vol.isPresent();
 	}
-
-	
 
 }
