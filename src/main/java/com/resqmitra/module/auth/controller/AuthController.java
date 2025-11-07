@@ -3,6 +3,7 @@ package com.resqmitra.module.auth.controller;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -14,6 +15,7 @@ import com.resqmitra.dto.LoginResponse;
 import com.resqmitra.module.auth.dto.LoginModel;
 import com.resqmitra.module.auth.exception.UserIdAndPasswordNotMatchException;
 import com.resqmitra.module.auth.service.AuthService;
+import com.resqmitra.module.auth.service.BlackListedTokenService;
 import com.resqmitra.module.user.entity.User;
 
 import jakarta.validation.Valid;
@@ -29,6 +31,9 @@ public class AuthController {
 	
 	@Autowired
 	private JWTUtils jwtUtils;
+	
+	@Autowired
+	private BlackListedTokenService tokenService;
 	
 	@PostMapping("/login")
 	public ResponseEntity<ApiResponse> login(@RequestBody @Valid LoginModel model) throws UserIdAndPasswordNotMatchException{
@@ -47,5 +52,10 @@ public class AuthController {
 		}
 	}
 	
+	@PostMapping("/logout")
+	public ResponseEntity<ApiResponse> logout(@RequestBody String token){
+		tokenService.logout(token);
+		return ResponseEntity.noContent().build();
+	}
 	
 }
