@@ -20,4 +20,12 @@ public class BlackListedTokenServiceImpl implements BlackListedTokenService{
 		return token.isPresent();
 	}
 
+	@Override
+	public void logout(String token) {
+		
+		BlackListedToken blacklisted = new BlackListedToken(token);
+		tokenRepo.save(blacklisted);
+		
+	}
+
 }
