@@ -164,4 +164,9 @@ public class UserServiceImpl implements UserDetailsService , UserService {
 		return users;
 	}
 
+	@Override
+	public List<User> searchVolunteer(String keyword) {
+		List<User> users = userRepo.findByRoleAndNameContainingIgnoreCaseOrRoleAndEmailContainingIgnoreCase( Role.ROLE_VOLUNTEER,keyword,  Role.ROLE_VOLUNTEER , keyword);
+		return users;
+	}
 }

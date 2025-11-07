@@ -32,7 +32,17 @@ public class SecurityConfig {
             .authorizeHttpRequests(auth -> auth
 //                .requestMatchers("/incident/register/volunteer" , "/incident/get/byvolunteer" , "/incident/resolve/**").hasRole("VOLUNTEER")
 //                .requestMatchers("/incident/get/bydate").hasRole("ADMIN")
-                .requestMatchers("/auth/**" , "/user/register",  "/incident/register",  "/swagger-ui/**", "/v3/api-docs/**", "/swagger-ui.html", "/webjars/**").permitAll()
+            		.requestMatchers(
+            			    "/auth/**",
+            			    "/user/register",
+            			    "/incident/register",
+            			    "/swagger-ui/**",
+            			    "/v3/api-docs/**",
+            			    "/v3/api-docs.yaml",
+            			    "/swagger-ui.html",
+            			    "/webjars/**"
+            			).permitAll()
+
                 .anyRequest().authenticated()
             );
 

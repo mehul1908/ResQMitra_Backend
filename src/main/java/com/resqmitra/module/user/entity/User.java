@@ -84,35 +84,30 @@ public class User implements UserDetails {
 	@Override
 	@JsonIgnore
 	public String getUsername() {
-		// TODO Auto-generated method stub
 		return this.email;
 	}
 	
 	@JsonIgnore
 	@Override
 	public boolean isAccountNonExpired() {
-		// TODO Auto-generated method stub
 		return UserDetails.super.isAccountNonExpired();
 	}
 
 	@JsonIgnore
 	@Override
 	public boolean isAccountNonLocked() {
-		// TODO Auto-generated method stub
 		return UserDetails.super.isAccountNonLocked();
 	}
 
 	@JsonIgnore
 	@Override
 	public boolean isCredentialsNonExpired() {
-		// TODO Auto-generated method stub
 		return UserDetails.super.isCredentialsNonExpired();
 	}
 
 	@JsonIgnore
 	@Override
 	public boolean isEnabled() {
-		// TODO Auto-generated method stub
 		return this.status == UserStatus.ACTIVE;
 	}
 }

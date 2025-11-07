@@ -1,5 +1,8 @@
 package com.resqmitra.module.notify.service;
 
+import java.time.LocalDate;
+import java.time.ZoneId;
+import java.time.format.DateTimeFormatter;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -25,7 +28,6 @@ public class EmailService {
 	
 	@Autowired
 	private SpringTemplateEngine templateEngine;
-	
 	
 	@Async
 	public void sendIncidentMail(IncidentNotifyModel model) throws MessagingException {
@@ -62,14 +64,14 @@ public class EmailService {
         			.volunteerName(volunteer.getName())
         			.incidentLocation(generateLocation(incident))
         			.incidentTime(incident.getCreatedAt().toString())
-        			.acceptLink(generateAcceptLink(incident.getIncidentId(), volunteer.getEmail()))
+        			.acceptLink(generateAcceptLink(incident.getIncidentId(), volunteer.getEmail() , LocalDate.now(ZoneId.of("Asia/Kolkata")) , incident.getLatitude() , incident.getLongitude() ))
         			.build();
         	sendIncidentMail(model);
         }
     }
 
-    private String generateAcceptLink(Long incidentId, String volunteerId) {
-        return "https://example.com/accept?incidentId=" + incidentId + "&volunteerId=" + volunteerId;
+    private String generateAcceptLink(Long incidentId, String volunteerId, LocalDate date, Double lat, Double lng) {
+        return "https://localhost:5173/volunteer/incident/alert?email="+volunteerId+"&incidentId="+incidentId+"&date="+date.format(DateTimeFormatter.ofPattern("dd-MM-yy"))+"&lat="+Double.toString(lat)+"&long="+Double.toString(lng);
     }
 
     private String generateLocation(Incident inc) {

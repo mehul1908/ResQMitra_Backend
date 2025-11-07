@@ -48,7 +48,7 @@ public class Incident {
     private LocalDateTime resolvedAt;
 
     public enum Status {
-        ACTIVE, IN_PROGRESS, RESOLVED, ESCALATED
+        ACTIVE, IN_PROGRESS, RESOLVED
     }
 }
 

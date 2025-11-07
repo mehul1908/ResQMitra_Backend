@@ -10,8 +10,7 @@ import lombok.NoArgsConstructor;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-public class BlackListedToken {
-	
+public class BlackListedToken {	
 	@Id
 	private String token;
 }

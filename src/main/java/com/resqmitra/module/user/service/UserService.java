@@ -32,4 +32,6 @@ public interface UserService {
 	void updateLocation(@Valid UserLocationUpdateModel model);
 
 	List<User> getAllVolunteer();
+
+	List<User> searchVolunteer(String keyword);
 }

@@ -97,4 +97,11 @@ public class UserController {
 	    return ResponseEntity.ok(new ApiResponse(true , users , "List of Volunteers")); // 200 OK
 
 	}
+	
+	@GetMapping("/get/volunteer/search/{keyword}")
+	public ResponseEntity<ApiResponse> searchVolunteer(@PathVariable String keyword){
+		List<User> users = userService.searchVolunteer(keyword);
+	    return ResponseEntity.ok(new ApiResponse(true , users , "List of Volunteers")); // 200 OK
+
+	}
 }
