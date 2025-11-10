@@ -46,6 +46,4 @@ public class RegisterUserModel {
 	private Double latitude;
 	
 	private Double longitude;
-	
-	
 }
