@@ -1,10 +1,12 @@
 package com.resqmitra.module.incident.entity;
 
 import java.time.LocalDateTime;
+import java.time.ZoneId;
 import java.util.ArrayList;
 import java.util.List;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.resqmitra.module.user.entity.User;
 
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Entity;
@@ -13,6 +15,8 @@ import jakarta.persistence.Enumerated;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
 import lombok.AllArgsConstructor;
@@ -36,6 +40,12 @@ public class Incident {
     @OneToMany(mappedBy = "incident", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<IncidentVolunteer> volunteers = new ArrayList();
 
+    @ManyToOne
+    @JoinColumn(name = "created_by" , nullable = false)
+    private User createdBy;
+    
+    private String description;
+    
     private Double latitude;
     private Double longitude;
 
@@ -44,7 +54,7 @@ public class Incident {
     private Status status = Status.ACTIVE;
 
     @Builder.Default
-    private LocalDateTime createdAt = LocalDateTime.now();
+    private LocalDateTime createdAt = LocalDateTime.now(ZoneId.systemDefault());
     private LocalDateTime resolvedAt;
 
     public enum Status {

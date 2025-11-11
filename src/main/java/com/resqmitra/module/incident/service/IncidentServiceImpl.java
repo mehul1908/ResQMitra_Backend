@@ -49,20 +49,46 @@ public class IncidentServiceImpl implements IncidentService{
 	
 	@Override
 	public Incident registerIncident(@Valid IncidentRegModel model) throws MessagingException {
-		
-		Incident inc = Incident.builder()
-				.latitude(model.getLatitude())
-				.longitude(model.getLongitude())
-				.build();
-		
-		incRepo.save(inc);
-		
-		
-		List<User> users = userService.getNearByVolunteer(inc);
-		emailService.sendIncidentEmailToVolunteers(users, inc);
-		// Notify them
-		return inc;
+		Incident inc = null;
+		try {
+	    Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+	    if (auth != null && auth.getPrincipal() instanceof User user) {
+
+	        LocalDateTime now = LocalDateTime.now(ZoneId.systemDefault());
+	        LocalDateTime twentyMinutesAgo = now.minusMinutes(20);
+
+	        // Get the latest incident created in the last 20 minutes
+	        Optional<Incident> recentIncident = incRepo
+	                .findTopByCreatedByAndCreatedAtBetweenOrderByCreatedAtDesc(user, twentyMinutesAgo, now);
+
+	        if(recentIncident.isPresent()) {
+	        	return null;
+	        }
+	        
+	        inc = Incident.builder()
+	                .latitude(model.getLatitude())
+	                .longitude(model.getLongitude())
+	                .createdBy(user)
+	                .description(model.getDescription())
+	                .build();
+
+	        incRepo.save(inc);
+
+	        List<User> users = userService.getNearByVolunteer(inc);
+	        emailService.sendIncidentEmailToVolunteers(users, inc);
+
+	        return inc;
+	    }
+	    throw new UnauthorizedUserException("User is unauthenticated or not valid");
+	    }catch(Exception ex) {
+	    	throw ex;
+	    }
+		finally {
+	    	if(inc!=null)
+	    		incRepo.delete(inc);
+	    }
 	}
+
 	
 	@Override
 	public Incident getIncidentById(Long incidentId) throws IncidentNotFoundException {

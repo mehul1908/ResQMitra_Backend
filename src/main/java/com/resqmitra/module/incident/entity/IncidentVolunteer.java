@@ -1,6 +1,7 @@
 package com.resqmitra.module.incident.entity;
 
 import java.time.LocalDateTime;
+import java.time.ZoneId;
 
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import com.resqmitra.module.user.entity.User;
@@ -13,13 +14,16 @@ import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
+import jakarta.persistence.UniqueConstraint;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
 @Entity
-@Table(name = "incident_volunteers")
+@Table(name = "incident_volunteers" , uniqueConstraints = {
+        @UniqueConstraint(columnNames = {"incident_id", "volunteer_id"})
+    })
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
@@ -40,7 +44,7 @@ public class IncidentVolunteer {
     private User volunteer;
 
     @Builder.Default
-    private LocalDateTime joinedAt = LocalDateTime.now();
+    private LocalDateTime joinedAt = LocalDateTime.now(ZoneId.systemDefault());
 
 }
 

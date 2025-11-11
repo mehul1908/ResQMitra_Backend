@@ -2,10 +2,12 @@ package com.resqmitra.module.incident.repo;
 
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Optional;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 
 import com.resqmitra.module.incident.entity.Incident;
+import com.resqmitra.module.user.entity.User;
 
 public interface IncidentRepo extends JpaRepository<Incident, Long> {
 
@@ -13,5 +15,12 @@ public interface IncidentRepo extends JpaRepository<Incident, Long> {
 
 
 	List<Incident> findAllByOrderByCreatedAtDesc();
+
+
+	List<Incident> findByCreatedByAndCreatedAtBetween(User user, LocalDateTime now, LocalDateTime now2);
+
+
+	Optional<Incident> findTopByCreatedByAndCreatedAtBetweenOrderByCreatedAtDesc(User user,
+			LocalDateTime twentyMinutesAgo, LocalDateTime now);
 	
 }

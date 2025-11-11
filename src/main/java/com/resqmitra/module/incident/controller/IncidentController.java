@@ -42,7 +42,7 @@ public class IncidentController {
 		Incident inc = incService.registerIncident(model);
 		
 		if(inc==null) {
-			log.warn("Incident is not created");
+			log.warn("Incident is not created. Repeated Request");
 			return ResponseEntity.status(HttpStatus.BAD_REQUEST)
 			        .body(new ApiResponse(false, null, "Incident Not Created"));
 		

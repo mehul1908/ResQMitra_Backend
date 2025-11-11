@@ -38,8 +38,7 @@ public class JWTFilter extends OncePerRequestFilter{
 	{
 		String url = request.getRequestURI();
 		log.info("Requested URL : " + url);
-		return url.contains("/auth") || 
-				url.contains("/incident/register") || 
+		return url.contains("/auth")  || 
 				url.contains("/user/register") ||
 				url.contains("/swagger-ui") ||
 				url.contains("/v3/api-docs") || 

@@ -59,7 +59,7 @@ public class User implements UserDetails {
 	
 	@Enumerated(EnumType.STRING)
 	@Builder.Default
-	private Role role = Role.ROLE_VOLUNTEER;
+	private Role role = Role.ROLE_CITIZEN;
 	
 	@Enumerated(EnumType.STRING)
 	@Builder.Default

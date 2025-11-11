@@ -8,7 +8,10 @@ public enum Role {
     ROLE_VOLUNTEER("Volunteer"),
     
     @JsonProperty("Admin")
-    ROLE_ADMIN("Admin");
+    ROLE_ADMIN("Admin"),
+    
+    @JsonProperty("Citizen")
+    ROLE_CITIZEN("Citizen");
 
     private final String displayName;
 

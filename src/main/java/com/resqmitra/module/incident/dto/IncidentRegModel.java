@@ -16,4 +16,6 @@ public class IncidentRegModel {
 	
 	@NotNull(message = "Longitude cannot be null")
 	private Double longitude;
+	
+	private String description;
 }
