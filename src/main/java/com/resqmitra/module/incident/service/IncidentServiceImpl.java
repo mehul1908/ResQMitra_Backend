@@ -81,11 +81,12 @@ public class IncidentServiceImpl implements IncidentService{
 	    }
 	    throw new UnauthorizedUserException("User is unauthenticated or not valid");
 	    }catch(Exception ex) {
+	    	if(inc!=null)
+	    		incRepo.delete(inc);
 	    	throw ex;
 	    }
 		finally {
-	    	if(inc!=null)
-	    		incRepo.delete(inc);
+	    	
 	    }
 	}
 
