@@ -30,7 +30,7 @@ public interface IncidentService {
 
 	void resolveIncident(Incident inc);
 
-	List<Incident> searchIncident(SearchModel model);
+//	List<Incident> searchIncident(SearchModel model);
 
 	List<Incident> searchIncident(LocalDate startDate, LocalDate endDate, String keyword);
 }

@@ -11,6 +11,7 @@ public class IncidentSpecification {
 
     public static Specification<Incident> filter(
     		User user ,
+    		User volunteer,
             LocalDateTime startDate,
             LocalDateTime endDate,
             String keyword,
@@ -18,6 +19,7 @@ public class IncidentSpecification {
     ) {
         return Specification
         		.where(createdBy(user))
+        		.and(volunteer(volunteer))
                 .and(startDate(startDate))
                 .and(endDate(endDate))
                 .and(keyword(keyword))
@@ -31,6 +33,13 @@ public class IncidentSpecification {
         };
     }
 
+    public static Specification<Incident> volunteer(User volunteer) {
+        return (root, query, cb) -> {
+            if (volunteer == null) return cb.conjunction();
+            var join = root.join("volunteers");
+            return cb.equal(join.get("volunteer"), volunteer);
+        };
+    }
 
     private static Specification<Incident> startDate(LocalDateTime startDate) {
         return (root, query, cb) -> {

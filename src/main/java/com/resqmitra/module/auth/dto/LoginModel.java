@@ -26,4 +26,8 @@ public class LoginModel {
 		)
 	private String password;
 	
+	private Double latitude;
+	
+	private Double longitude;
+	
 }

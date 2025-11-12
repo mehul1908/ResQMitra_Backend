@@ -129,6 +129,7 @@ public class IncidentServiceImpl implements IncidentService{
 		
 		incVolunteerRepo.save(incVolunteer);
 		inc.setStatus(Incident.Status.IN_PROGRESS);
+		incRepo.save(inc);
 		return incVolunteer;
 		
 	}
@@ -193,43 +194,43 @@ public class IncidentServiceImpl implements IncidentService{
 	}
 
 
-	@Override
-	public List<Incident> searchIncident(SearchModel model) {
-		Authentication auth = SecurityContextHolder.getContext().getAuthentication();
-		if (auth != null && auth.getPrincipal() instanceof User user) {
-			List<Incident> incidents = null;
-			Incident.Status status = null;
-			if(user.getRole().equals(Role.ROLE_VOLUNTEER)) {
-				
-			}else {
-				LocalDateTime start = model.getStartDate() != null ? model.getStartDate().atStartOfDay() : null;
-				LocalDateTime end = model.getEndDate() != null ? model.getEndDate().atTime(LocalTime.MAX) : null;
-				String keyword = (model.getKeyword() != null && !model.getKeyword().isBlank()) ? model.getKeyword() : null;
-				if(keyword!=null && keyword.toLowerCase().startsWith("active")) status = Incident.Status.ACTIVE;
-				else if(keyword!=null && keyword.toLowerCase().startsWith("resolve")) status = Incident.Status.RESOLVED;
-				System.out.println("Keyword value: " + status);
-				System.out.println("Keyword type: " + (keyword == null ? "null" : keyword.getClass().getName()));
-
-//				incidents = incRepo.findFilteredIncidents(
-//				    user.getRole().equals(Role.ROLE_CITIZEN)?user : null ,
-//				    start,
-//				    end,
-//				    keyword,
-//				    status
-//				);
-				
-				incidents = incRepo.findAll(
-					    IncidentSpecification.filter(user.getRole().equals(Role.ROLE_CITIZEN)?user:null, start, end, keyword, status),
-					    Sort.by(Sort.Direction.DESC, "createdAt")
-					);
-
-
-			}
-			return incidents;
-		} else {
-			throw new UnauthorizedUserException("User is unauthentical or not valid");
-		}
-	}
+//	@Override
+//	public List<Incident> searchIncident(SearchModel model) {
+//		Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+//		if (auth != null && auth.getPrincipal() instanceof User user) {
+//			List<Incident> incidents = null;
+//			Incident.Status status = null;
+//			if(user.getRole().equals(Role.ROLE_VOLUNTEER)) {
+//				
+//			}else {
+//				LocalDateTime start = model.getStartDate() != null ? model.getStartDate().atStartOfDay() : null;
+//				LocalDateTime end = model.getEndDate() != null ? model.getEndDate().atTime(LocalTime.MAX) : null;
+//				String keyword = (model.getKeyword() != null && !model.getKeyword().isBlank()) ? model.getKeyword() : null;
+//				if(keyword!=null && keyword.toLowerCase().startsWith("active")) status = Incident.Status.ACTIVE;
+//				else if(keyword!=null && keyword.toLowerCase().startsWith("resolve")) status = Incident.Status.RESOLVED;
+//				System.out.println("Keyword value: " + status);
+//				System.out.println("Keyword type: " + (keyword == null ? "null" : keyword.getClass().getName()));
+//
+////				incidents = incRepo.findFilteredIncidents(
+////				    user.getRole().equals(Role.ROLE_CITIZEN)?user : null ,
+////				    start,
+////				    end,
+////				    keyword,
+////				    status
+////				);
+//				
+//				incidents = incRepo.findAll(
+//					    IncidentSpecification.filter(user.getRole().equals(Role.ROLE_ADMIN)?null:user, user.getRole().equals(Role.ROLE_VOLUNTEER) ? user : null, start, end, keyword, status),
+//					    Sort.by(Sort.Direction.DESC, "createdAt")
+//					);
+//
+//
+//			}
+//			return incidents;
+//		} else {
+//			throw new UnauthorizedUserException("User is unauthentical or not valid");
+//		}
+//	}
 
 
 	@Override
@@ -238,9 +239,7 @@ public class IncidentServiceImpl implements IncidentService{
 		if (auth != null && auth.getPrincipal() instanceof User user) {
 			List<Incident> incidents = null;
 			Incident.Status status = null;
-			if(user.getRole().equals(Role.ROLE_VOLUNTEER)) {
-				
-			}else {
+			
 				LocalDateTime start = startDate != null ? startDate.atStartOfDay() : null;
 				LocalDateTime end = endDate != null ? endDate.atTime(LocalTime.MAX) : null;
 				keyword = (keyword != null && keyword.isBlank()) ? keyword : null;
@@ -258,12 +257,12 @@ public class IncidentServiceImpl implements IncidentService{
 //				);
 				
 				incidents = incRepo.findAll(
-					    IncidentSpecification.filter(user.getRole().equals(Role.ROLE_CITIZEN)?user:null, start, end, keyword, status),
+					    IncidentSpecification.filter(user.getRole().equals(Role.ROLE_CITIZEN)?user:null, user.getRole().equals(Role.ROLE_VOLUNTEER) ? user : null , start, end, keyword, status),
 					    Sort.by(Sort.Direction.DESC, "createdAt")
 					);
 
 
-			}
+			
 			return incidents;
 		} else {
 			throw new UnauthorizedUserException("User is unauthentical or not valid");
