@@ -6,9 +6,12 @@ import java.util.ArrayList;
 import java.util.List;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import com.resqmitra.module.user.entity.User;
+import com.resqmitra.module.user.entity.UserIdSerializer;
 
 import jakarta.persistence.CascadeType;
+import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
@@ -41,10 +44,13 @@ public class Incident {
     private List<IncidentVolunteer> volunteers = new ArrayList();
 
     @ManyToOne
+    @JsonSerialize(using = UserIdSerializer.class)
     @JoinColumn(name = "created_by" , nullable = false)
     private User createdBy;
     
+    @Column(columnDefinition = "TEXT")
     private String description;
+
     
     private Double latitude;
     private Double longitude;

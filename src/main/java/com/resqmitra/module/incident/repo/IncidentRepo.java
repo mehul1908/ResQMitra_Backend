@@ -4,12 +4,18 @@ import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 
+import org.springframework.data.domain.Sort;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
+import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
 
 import com.resqmitra.module.incident.entity.Incident;
+import com.resqmitra.module.incident.entity.Incident.Status;
 import com.resqmitra.module.user.entity.User;
 
-public interface IncidentRepo extends JpaRepository<Incident, Long> {
+public interface IncidentRepo extends JpaRepository<Incident, Long> , JpaSpecificationExecutor<Incident>{
 
 	List<Incident> findByCreatedAtBetween(LocalDateTime startDate, LocalDateTime endDate);
 
@@ -22,5 +28,13 @@ public interface IncidentRepo extends JpaRepository<Incident, Long> {
 
 	Optional<Incident> findTopByCreatedByAndCreatedAtBetweenOrderByCreatedAtDesc(User user,
 			LocalDateTime twentyMinutesAgo, LocalDateTime now);
+
+
+	List<Incident> findByCreatedAtBetweenAndDescriptionContainingIgnoreCaseOrStatus(
+			LocalDateTime atStartOfDay, LocalDateTime atTime, String keyword, Status status);
 	
+	
+	
+
+
 }

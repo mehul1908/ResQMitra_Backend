@@ -1,5 +1,6 @@
 package com.resqmitra.module.incident.service;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.time.ZoneId;
@@ -8,6 +9,8 @@ import java.util.Optional;
 import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Sort;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
@@ -17,11 +20,13 @@ import com.resqmitra.module.auth.exception.UnauthorizedUserException;
 import com.resqmitra.module.incident.dto.DateModel;
 import com.resqmitra.module.incident.dto.IncidentRegModel;
 import com.resqmitra.module.incident.dto.IncidentVolunteerRegModel;
+import com.resqmitra.module.incident.dto.SearchModel;
 import com.resqmitra.module.incident.entity.Incident;
 import com.resqmitra.module.incident.entity.IncidentVolunteer;
 import com.resqmitra.module.incident.exception.IncidentNotFoundException;
 import com.resqmitra.module.incident.repo.IncidentRepo;
 import com.resqmitra.module.incident.repo.IncidentVolunteerRepo;
+import com.resqmitra.module.incident.specification.IncidentSpecification;
 import com.resqmitra.module.notify.service.EmailService;
 import com.resqmitra.module.user.entity.User;
 import com.resqmitra.module.user.service.UserService;
@@ -185,6 +190,84 @@ public class IncidentServiceImpl implements IncidentService{
 			return false;
 		Optional<IncidentVolunteer> vol = incVolunteerRepo.findByVolunteerAndIncident(user , inc);
 		return vol.isPresent();
+	}
+
+
+	@Override
+	public List<Incident> searchIncident(SearchModel model) {
+		Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+		if (auth != null && auth.getPrincipal() instanceof User user) {
+			List<Incident> incidents = null;
+			Incident.Status status = null;
+			if(user.getRole().equals(Role.ROLE_VOLUNTEER)) {
+				
+			}else {
+				LocalDateTime start = model.getStartDate() != null ? model.getStartDate().atStartOfDay() : null;
+				LocalDateTime end = model.getEndDate() != null ? model.getEndDate().atTime(LocalTime.MAX) : null;
+				String keyword = (model.getKeyword() != null && !model.getKeyword().isBlank()) ? model.getKeyword() : null;
+				if(keyword!=null && keyword.toLowerCase().startsWith("active")) status = Incident.Status.ACTIVE;
+				else if(keyword!=null && keyword.toLowerCase().startsWith("resolve")) status = Incident.Status.RESOLVED;
+				System.out.println("Keyword value: " + status);
+				System.out.println("Keyword type: " + (keyword == null ? "null" : keyword.getClass().getName()));
+
+//				incidents = incRepo.findFilteredIncidents(
+//				    user.getRole().equals(Role.ROLE_CITIZEN)?user : null ,
+//				    start,
+//				    end,
+//				    keyword,
+//				    status
+//				);
+				
+				incidents = incRepo.findAll(
+					    IncidentSpecification.filter(user.getRole().equals(Role.ROLE_CITIZEN)?user:null, start, end, keyword, status),
+					    Sort.by(Sort.Direction.DESC, "createdAt")
+					);
+
+
+			}
+			return incidents;
+		} else {
+			throw new UnauthorizedUserException("User is unauthentical or not valid");
+		}
+	}
+
+
+	@Override
+	public List<Incident> searchIncident(LocalDate startDate, LocalDate endDate, String keyword) {
+		Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+		if (auth != null && auth.getPrincipal() instanceof User user) {
+			List<Incident> incidents = null;
+			Incident.Status status = null;
+			if(user.getRole().equals(Role.ROLE_VOLUNTEER)) {
+				
+			}else {
+				LocalDateTime start = startDate != null ? startDate.atStartOfDay() : null;
+				LocalDateTime end = endDate != null ? endDate.atTime(LocalTime.MAX) : null;
+				keyword = (keyword != null && keyword.isBlank()) ? keyword : null;
+				if(keyword!=null && keyword.toLowerCase().startsWith("active")) status = Incident.Status.ACTIVE;
+				else if(keyword!=null && keyword.toLowerCase().startsWith("resolve")) status = Incident.Status.RESOLVED;
+				System.out.println("Keyword value: " + status);
+				System.out.println("Keyword type: " + (keyword == null ? "null" : keyword.getClass().getName()));
+
+//				incidents = incRepo.findFilteredIncidents(
+//				    user.getRole().equals(Role.ROLE_CITIZEN)?user : null ,
+//				    start,
+//				    end,
+//				    keyword,
+//				    status
+//				);
+				
+				incidents = incRepo.findAll(
+					    IncidentSpecification.filter(user.getRole().equals(Role.ROLE_CITIZEN)?user:null, start, end, keyword, status),
+					    Sort.by(Sort.Direction.DESC, "createdAt")
+					);
+
+
+			}
+			return incidents;
+		} else {
+			throw new UnauthorizedUserException("User is unauthentical or not valid");
+		}
 	}
 
 }

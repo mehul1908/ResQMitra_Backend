@@ -1,5 +1,6 @@
 package com.resqmitra.module.incident.controller;
 
+import java.time.LocalDate;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -12,12 +13,14 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.resqmitra.dto.ApiResponse;
 import com.resqmitra.module.incident.dto.DateModel;
 import com.resqmitra.module.incident.dto.IncidentRegModel;
 import com.resqmitra.module.incident.dto.IncidentVolunteerRegModel;
+import com.resqmitra.module.incident.dto.SearchModel;
 import com.resqmitra.module.incident.entity.Incident;
 import com.resqmitra.module.incident.entity.IncidentVolunteer;
 import com.resqmitra.module.incident.exception.IncidentNotFoundException;
@@ -98,5 +101,15 @@ public class IncidentController {
 		incService.resolveIncident(inc);
 		
 		return ResponseEntity.noContent().build();
+	}
+	
+	
+	@PostMapping("/get/data")
+	public ResponseEntity<ApiResponse> searchIncident(@RequestParam(required = false) LocalDate startDate,
+		    @RequestParam(required = false) LocalDate endDate,
+		    @RequestParam(required = false) String keyword){
+		List<Incident> incidents = incService.searchIncident(startDate , endDate , keyword);
+		return ResponseEntity.ok(new ApiResponse(true, incidents, "List of Incidents"));
+
 	}
 }
