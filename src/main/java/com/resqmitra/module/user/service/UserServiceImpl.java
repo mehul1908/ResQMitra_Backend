@@ -13,12 +13,14 @@ import org.springframework.stereotype.Service;
 
 import com.resqmitra.module.auth.exception.UnauthorizedUserException;
 import com.resqmitra.module.incident.entity.Incident;
+import com.resqmitra.module.incident.specification.IncidentSpecification;
 import com.resqmitra.module.user.dto.RegisterUserModel;
 import com.resqmitra.module.user.dto.UserLocationUpdateModel;
 import com.resqmitra.module.user.dto.UserUpdateModel;
 import com.resqmitra.module.user.entity.User;
 import com.resqmitra.module.user.exception.UserAlreadyCreatedException;
 import com.resqmitra.module.user.repo.UserRepository;
+import com.resqmitra.module.user.specification.UserSpecification;
 import com.resqmitra.utilities.Role;
 import com.resqmitra.utilities.UserStatus;
 
@@ -161,6 +163,19 @@ public class UserServiceImpl implements UserDetailsService , UserService {
 	@Override
 	public List<User> getAllVolunteer() {
 		List<User> users = userRepo.findByRole(Role.ROLE_VOLUNTEER);
+		return users;
+	}
+
+	@Override
+	public List<User> searchUser(String keyword) {
+		List<User> users = userRepo.findAll(
+				UserSpecification.filter(keyword));
+		return users;
+	}
+
+	@Override
+	public List<User> getAllUser() {
+		List<User> users =userRepo.findAll();
 		return users;
 	}
 

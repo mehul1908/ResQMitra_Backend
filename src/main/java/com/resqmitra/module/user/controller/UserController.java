@@ -92,15 +92,15 @@ public class UserController {
 	
 	
 	@GetMapping("/get/volunteer")
-	public ResponseEntity<ApiResponse> getAllVolunteer(){
-		List<User> users = userService.getAllVolunteer();
+	public ResponseEntity<ApiResponse> getAllUser(){
+		List<User> users = userService.getAllUser();
 	    return ResponseEntity.ok(new ApiResponse(true , users , "List of Volunteers")); // 200 OK
 
 	}
 	
 	@GetMapping("/get/volunteer/search/{keyword}")
 	public ResponseEntity<ApiResponse> searchVolunteer(@PathVariable String keyword){
-		List<User> users = userService.searchVolunteer(keyword);
+		List<User> users = userService.searchUser(keyword);
 	    return ResponseEntity.ok(new ApiResponse(true , users , "List of Volunteers")); // 200 OK
 
 	}

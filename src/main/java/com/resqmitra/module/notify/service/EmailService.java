@@ -71,7 +71,7 @@ public class EmailService {
     }
 
     private String generateAcceptLink(Long incidentId, String volunteerId, LocalDate date, Double lat, Double lng) {
-        return "http://localhost:5173/volunteer/incident/alert?email="+volunteerId+"&incidentId="+incidentId+"&date="+date.format(DateTimeFormatter.ofPattern("dd-MM-yy"))+"&lat="+Double.toString(lat)+"&long="+Double.toString(lng);
+        return "http://localhost:5173/volunteer/incident/alert?email="+volunteerId+"&incidentId="+incidentId+"&date="+date.format(DateTimeFormatter.ofPattern("MM-dd-yy"))+"&lat="+Double.toString(lat)+"&long="+Double.toString(lng);
     }
 
     private String generateLocation(Incident inc) {

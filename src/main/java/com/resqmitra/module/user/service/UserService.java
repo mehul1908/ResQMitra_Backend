@@ -34,4 +34,8 @@ public interface UserService {
 	List<User> getAllVolunteer();
 
 	List<User> searchVolunteer(String keyword);
+
+	List<User> getAllUser();
+
+	List<User> searchUser(String keyword);
 }

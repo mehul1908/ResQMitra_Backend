@@ -105,10 +105,8 @@ public class IncidentController {
 	
 	
 	@PostMapping("/get/data")
-	public ResponseEntity<ApiResponse> searchIncident(@RequestParam(required = false) LocalDate startDate,
-		    @RequestParam(required = false) LocalDate endDate,
-		    @RequestParam(required = false) String keyword){
-		List<Incident> incidents = incService.searchIncident(startDate , endDate , keyword);
+	public ResponseEntity<ApiResponse> searchIncident(@RequestBody SearchModel model){
+		List<Incident> incidents = incService.searchIncident(model.getStartDate() , model.getEndDate() , model.getKeyword());
 		return ResponseEntity.ok(new ApiResponse(true, incidents, "List of Incidents"));
 
 	}
