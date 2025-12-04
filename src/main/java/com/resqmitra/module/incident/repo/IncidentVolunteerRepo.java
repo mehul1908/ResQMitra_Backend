@@ -17,5 +17,7 @@ public interface IncidentVolunteerRepo extends JpaRepository<IncidentVolunteer, 
 
 	List<IncidentVolunteer> findByVolunteerOrderByIncidentCreatedAtDesc(User user);
 
+	List<IncidentVolunteer> findByIncident(Incident inc);
+
 
 }

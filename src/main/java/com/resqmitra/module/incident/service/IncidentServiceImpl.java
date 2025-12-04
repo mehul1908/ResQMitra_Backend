@@ -107,7 +107,10 @@ public class IncidentServiceImpl implements IncidentService {
 			log.warn("Incident with given id not found: {}", model.getIncidentId());
 			throw new IncidentNotFoundException(model.getIncidentId());
 		}
-
+		List<IncidentVolunteer> incVols = incVolunteerRepo.findByIncident(inc);
+		if(incVols==null || incVols.size()>0) {
+			throw new RuntimeException("Already another volunteer is assigned");
+		}
 		User user = userService.getUserByIdAndRole(model.getVolunteerId(), Role.ROLE_VOLUNTEER);
 
 		if (user == null) {
